@@ -1,0 +1,1993 @@
+data is case sensitive but not sql
+
+
+select * from employees;
+select * from departments;
+select * from jobs;
+select * from locations;
+select * from countries;
+
+desc employees;     //describe tables and gives structure of tables;
+desc departments;
+
+//select some fixed columns/attributes from a table.
+select 
+employee_id, first_name, department_id, salary
+from employees;
+
+//concatenation
+select
+first_name || last_name 
+from employees;
+
+//operators
+select
+employee_id, salary, salary+300, department_id
+from employees;
+
+//aliasing- new names to columns
+select
+employee_id, salary, salary+300 as new_salary, department_id
+from employees;
+
+//distinct -- avoid duplicate values (also have null values), 
+---has to be used with single column otherwise not unique columns
+select distinct employee_id 
+from employees;
+
+select distinct employee_id, department_id          //not unique
+from employees;
+
+//where  ---- for selecting values from certain tuples
+
+select 
+employee_id, department_id , first_name 
+from employees 
+where first_name = 'Lex';      // date and char value in single quotes
+
+select 
+employee_id, hire_date
+from employees 
+where hire_date = '1993-01-13';  
+
+
+// comparison operators
+
+=
+<
+>
+<=
+>=
+!=
+like
+between and
+in
+not
+
+select
+employee_id, department_id,salary
+from employees
+ where salary>=2600;
+
+
+select
+employee_id, department_id,salary,first_name
+from employees
+ where salary between 2600 and 4400;                      // inclusive of lower and upper bound
+
+select 
+employee_id, department_id
+from employees
+where department_id in (90,60);                           // for multiple values of department_id
+
+select 
+employee_id, department_id,job_id
+from employees
+where job_id in ('SA_REP', 'IT_PROG');
+
+---- like is a pattern matching operator
+-----  we use _ and % in like
+        _ represents single character
+        % represents multipkle char        .
+         these are known as wild card char.
+
+select
+employee_id, first_name
+from employees
+where first_name like '_e%';
+
+--- is null      is not null  ///don't use comparison operator when equating with null
+
+select 
+employee_id, manager_id
+from employees
+where manager_id is not null;     // employees working under some manager.
+
+//LOGICAL OPERATORS   // options between choice of conditions in where
+
+and 
+or
+not
+
+select 
+employee_id,last_name,salary,manager_id
+from employees
+where salary>4400 and  manager_id is not null;
+
+//order by  ----- should be the last clause
+desc
+asc
+default is asc
+
+select 
+employee_id, first_name 
+from employees
+order by first_name;
+
+
+select 
+employee_id, first_name 
+from employees
+order by first_name,employee_id;    //first order by first_name then by employee_id\
+
+---aliasing in order by
+
+select 
+employee_id,first_name as name
+from employees
+order by name;
+
+select 
+employee_id,first_name,salary
+from employees
+order by 3;                   //3 means salary column
+
+
+//MySQL functions
+
+--------- concat()       //combines two strings
+
+In mariaDb and MYsql, no dual table.
+select
+concat('my first','database class');           //dummy table, not in any table
+
+--aliasing
+
+select
+concat('my first','database class') as name; 
+
+select
+concat('my first',' ','database class') as name;    //space between first and database.
+
+select
+concat(first_name,' job id is  ',job_id ) as job_id_list
+from employees;
+   
+
+   In oracle, we have dual table as dummy table
+
+   select 10+2 from dual;
+   select 'manish' from dual;
+
+---- oracle concat
+
+select 
+first_name||' '||last_name name
+from employees;
+
+select
+first_name||' has a job id '||job_id name_job
+from employees;
+
+
+//Replace in maria_db
+
+select replace ('jack and jue','j','Bl');      //replace j with Bl in jack and jue
+
+
+------------in oracle
+select replace('jack and jue','j','Bl')
+from dual;
+
+
+//Substring
+
+select 
+substring('hello world',1,5);         //hello
+
+select 
+substring('hello world',5,3);           //  o w
+
+select 
+substring('hello world',5);             //    o world
+
+select 
+substring(first_name, 1,5) name        //list of all first 5 characters
+from employees;
+
+
+-----------in oracle
+select
+substr('hello world',1,5)
+from dual;
+
+//trim
+select trim( '    database      ');           //remove spaces
+
+select trim('x' from 'xxxdatabase');         //removes unwanted x from the begining
+
+--- trim can only trim from begining or ending not inbetween the characters.
+
+select trim( 'd' from 'database');    // atabase
+select trim( 'e' from 'database');    // databas
+select trim( 'a' from 'database');    //database
+
+-----------from dual is used in case of oracle.
+
+//Format
+
+select format(1234567.789,2);        // 1,234,567.79 -- 2 digits after decimal
+
+//Date
+
+select curdate();   //2019-06-22
+select curdate()+0;    //20190622      (without separators)
+
+------in oracle
+   select sysdate()
+   from dual;
+
+//Datediff
+
+select datediff('2019-01-12','2018-01-12');      //365
+
+//Day
+
+select
+hire_date, day(hire_date)      
+from employees;              //extract all the days in numbers (eg 17)of all the hiring dates.
+
+
+{
+select date_add('1999-12-31 23:59:59',interval 1 second);     //2000-01-01 00:00:00    add 1 sec
+
+select date_add('1999-12-31 00:00:01', interval 1 day);      //  2000-01-01 00:00:01     add 1 day
+
+select date_add('1999-12-31 00:00:01',interval '1:1' minute_second);    //add 1 min and 1 sec
+
+simlarly date_sub;
+}
+
+//Dayname
+
+select dayname(hire_date)             
+from employees;                                  // eg wednesday, saturday.
+
+select dayname(curdate());                       //Saturday
+select dayname('2019-06-22');                     //Saturday
+
+//Dayofweek
+
+select dayofweek(curdate());                   // 7 for satuday.   starts from sunday.
+
+//extract()
+
+select extract(day from curdate());               //22 (for 2019-06-22)
+select extract(month from curdate());             //6
+select extract(year from curdate());              //2019
+select extract(hour from sysdate());               //14 for 14:33
+
+
+// math functions
+
+-------abs()    //absolute value
+
+select abs(123),abs(-3635656), abs(123.445);    //positive values
+
+-------ceil()   (higher )
+
+select ceil(1.9);          //2
+select ceil(-1.7);          //-1
+
+-------floor()   (lower)    
+
+
+select floor(1.9);  //1
+
+select floor(-1.9);    //2
+
+--------mod()
+
+select mod(100,2);    //0
+select (100%2);
+        
+       in oracle
+          select mod(100,2) from dual;        
+
+------------ round()            (rounding off)
+
+select round(12.57,1);        //12.6
+select round(12.52,1);        //12.5
+
+         For negative values of the parameter, the rounding off goes to left of the decimal. will not check floating digits in case of negative parameter
+
+select round(12.57,-1);       //10
+select round(15.57,-1);       //20
+select round(15.00,-1);       //20
+
+
+------------truncate()
+
+select truncate(22.56,1);          //22.5
+select truncate(25.89,1);          //25.8
+select truncate(-25.78,1);          //-25.7
+
+
+
+select truncate(22.56,-1);          //20
+select truncate(25.89,-1);          //20
+select truncate(-28.78,-1);          //-20          (note it)
+
+
+//case      (in sql we don't have loop)
+
+select 
+employee_id, first_name, salary,
+case job_id
+    when 'SA_REP' then 1.1*salary
+    when 'ST_CLERK' then 1.2*salary
+else salary
+end "revise_salary"             //aliasing     end is for ending case
+from employees;
+
+//ifnull()
+
+select 
+employee_id,commission_pct,
+ifnull(commission_pct,0) comm        //comm is aliasing
+from employees;                  // if  commission_pct is null then replace it with 0
+
+
+//nullif()             // if length of both string not equal then return first value, if length is equal then return NULL
+
+select length(first_name),length(last_name),
+nullif(length(first_name),length(last_name)) null_if          //aliasing
+from employees;
+
+
+// isnull()
+
+select isnull(1);     //0 (means false)
+select isnull(1);    //0
+
+select commission_pct,isnull(commission_pct)
+from employees;                                          // a list, 1 denotes null , 0 denotes not null
+ 
+
+// coalesce         (it returns the first not-null value in the list/expression/tuple)
+
+select manager_id,commission_pct, employee_id,
+coalesce(manager_id,commission_pct, employee_id) coll       
+from employees;
+
+
+--------There are two types of functions in SQL
+          single row and multi row
+                single row---    same rows as output
+                multi row---  group or aggregate functions -- passing many rows and getting less rows as output
+-------all aggregate functions will not include null values but include duplicate values
+
+---------sum, min,max,count,avg
+
+select sum(salary)
+from employees;
+
+select count(*)
+from employees;
+
+select count(commission_pct)            //4 beacuse 4 are not null
+from employees;
+
+select count(distinct department_id)
+from employees;
+
+select avg(commission_pct)
+from employees;
+
+
+// group by --- don't group people by primary keys
+
+select
+department_id , avg(salary)       // the attributes which are defined here must also be present in group by clause;
+from employees
+group by department_id;
++---------------+--------------------+
+| department_id | avg(salary)        |
++---------------+--------------------+
+|          NULL |               7000 |
+|            10 |               4400 |
+|            20 |               9500 |
+|            50 |               3500 |
+|            60 |               7050 |
+|            80 | 10033.333333333334 |
+|            90 | 19333.333333333332 |
+|           110 |              10150 |
++---------------+--------------------+
+
+
+
+select min()
+
+
+
+select
+department_id,manager_id,avg(salary)       
+from employees
+group by department_id,manager_id;
++---------------+------------+-------------+
+| department_id | manager_id | avg(salary) |
++---------------+------------+-------------+
+|          NULL |        149 |        7000 |
+|            10 |        101 |        4400 |
+|            20 |        100 |       13000 |
+|            20 |        201 |        6000 |
+|            50 |        100 |        5800 |
+|            50 |        124 |        2925 |
+|            60 |        102 |        9000 |
+|            60 |        103 |        6400 |
+|            80 |        100 |       10500 |
+|            80 |        149 |        9800 |
+|            90 |       NULL |       24000 |
+|            90 |        100 |       17000 |
+|           110 |        101 |       12000 |
+|           110 |        205 |        8300 |
++---------------+------------+-------------+
+
+
+
+
+// minimum and maximum can accept data, alphabets and date
+// sum and avg can only accept numeric datatype
+
+
+--------------having clause   (restricting the group data, whereas where for restricting the table data)
+
+
+select job_id,round(avg(salary))
+from employees
+group by job_id
+having avg(salary)>8300;      //having must have an aggregate function in it.
+
++---------+--------------------+
+| job_id  | round(avg(salary)) |
++---------+--------------------+
+| AC_MGR  |              12000 |
+| AD_PRES |              24000 |
+| AD_VP   |              17000 |
+| MK_MAN  |              13000 |
+| SA_MAN  |              10500 |
+| SA_REP  |               8867 |
++---------+--------------------+
+
+
+----------- only in order by , we can use the alising.
+
+select job_id,round(avg(salary))
+from employees 
+where job_id in ('AC_MGR','AD_PRES','AD_VP')
+group by job_id
+having avg(salary)>8300
+order by job_id;
++---------+--------------------+
+| job_id  | round(avg(salary)) |
++---------+--------------------+
+| AC_MGR  |              12000 |
+| AD_PRES |              24000 |
+| AD_VP   |              17000 |
++---------+--------------------+
+
+
+
+select job_id,round(avg(salary))
+from employees 
+group by job_id
+having avg(salary)>8300
+order by job_id;             //for ascending order of job_id
+
+
+
+-------------joins
+
+1. Inner join (data matches in both tables)
+    a. Natural join
+    b. using clause
+    c. on
+    d. self join
+2. outer join
+    a. Left outer join
+    b. right outer join
+    c. full outer join
+3. cross join
+4. nonequi join
+
+
+
+Natural Join: single common column and same datatype.
+
+select department_name,city
+from departments natural join locations;
++-----------------+---------------------+
+| department_name | city                |
++-----------------+---------------------+
+| Administration  | Seattle             |
+| Marketing       | Toronto             |
+| Shipping        | South San Francisco |
+| IT              | Southlake           |
+| Sales           | Oxford              |
+| Executive       | Seattle             |
+| Accounting      | Seattle             |
+| Contracting     | Seattle             |
++-----------------+---------------------+
+8 rows in set (0.02 sec)
+
+
+--- using clause:  (when more than one common column)
+
+
+select 
+employee_id, department_name
+from employees join departments 
+using(department_id);
++-------------+-----------------+
+| employee_id | department_name |
++-------------+-----------------+
+|         100 | Executive       |
+|         101 | Executive       |
+|         102 | Executive       |
+|         103 | IT              |
+|         104 | IT              |
+|         106 | IT              |
+|         107 | IT              |
+|         124 | Shipping        |
+|         141 | Shipping        |
+|         142 | Shipping        |
+|         143 | Shipping        |
+|         144 | Shipping        |
+|         149 | Sales           |
+|         174 | Sales           |
+|         176 | Sales           |
+|         200 | Administration  |
+|         201 | Marketing       |
+|         202 | Marketing       |
+|         205 | Accounting      |
+|         206 | Accounting      |
++-------------+-----------------+
+
+
+select 
+employee_id, department_name,manager_id      // won't executes because manager_id is common, optimizer getting confused
+from employees join departments 
+using(department_id,manager_id);
+
+| employee_id | department_name | manager_id |
++-------------+-----------------+------------+
+|         104 | IT              |        103 |
+|         106 | IT              |        103 |
+|         107 | IT              |        103 |
+|         141 | Shipping        |        124 |
+|         142 | Shipping        |        124 |
+|         143 | Shipping        |        124 |
+|         144 | Shipping        |        124 |
+|         174 | Sales           |        149 |
+|         176 | Sales           |        149 |
+|         202 | Marketing       |        201 |
+|         206 | Accounting      |        205 |
++-------------+-----------------+------------+
+11 rows in set (0.00 sec)
+
+
+--- mariadb mysql
+select 
+e.employee_id, d.department_name,e.department_id
+from employees e join departments d
+using(department_id);
++-------------+-----------------+---------------+
+| employee_id | department_name | department_id |
++-------------+-----------------+---------------+
+|         100 | Executive       |            90 |
+|         101 | Executive       |            90 |
+|         102 | Executive       |            90 |
+|         103 | IT              |            60 |
+|         104 | IT              |            60 |
+|         106 | IT              |            60 |
+|         107 | IT              |            60 |
+|         124 | Shipping        |            50 |
+|         141 | Shipping        |            50 |
+|         142 | Shipping        |            50 |
+|         143 | Shipping        |            50 |
+|         144 | Shipping        |            50 |
+|         149 | Sales           |            80 |
+|         174 | Sales           |            80 |
+|         176 | Sales           |            80 |
+|         200 | Administration  |            10 |
+|         201 | Marketing       |            20 |
+|         202 | Marketing       |            20 |
+|         205 | Accounting      |           110 |
+|         206 | Accounting      |           110 |
++-------------+-----------------+---------------+
+20 rows in set (0.00 sec)
+
+
+--- oracle
+select 
+e.employee_id, d.department_name, department_id
+from employees e join departments d
+using(department_id);                   // don't alias attribute in using clause.
+
+
+
+
+----------------on clause oe equijoin    with three -way join---three tables
+
+select
+employee_id,job_id,department_name,city
+from employees e join departments d
+on(e.department_id=d.department_id)
+join locations l
+on(d.location_id=l.location_id);
++-------------+------------+-----------------+---------------------+
+| employee_id | job_id     | department_name | city                |
++-------------+------------+-----------------+---------------------+
+|         100 | AD_PRES    | Executive       | Seattle             |
+|         101 | AD_VP      | Executive       | Seattle             |
+|         102 | AD_VP      | Executive       | Seattle             |
+|         103 | IT_PROG    | IT              | Southlake           |
+|         104 | IT_PROG    | IT              | Southlake           |
+|         106 | IT_PROG    | IT              | Southlake           |
+|         107 | IT_PROG    | IT              | Southlake           |
+|         124 | ST_MAN     | Shipping        | South San Francisco |
+|         141 | ST_CLERK   | Shipping        | South San Francisco |
+|         142 | ST_CLERK   | Shipping        | South San Francisco |
+|         143 | ST_CLERK   | Shipping        | South San Francisco |
+|         144 | ST_CLERK   | Shipping        | South San Francisco |
+|         149 | SA_MAN     | Sales           | Oxford              |
+|         174 | SA_REP     | Sales           | Oxford              |
+|         176 | SA_REP     | Sales           | Oxford              |
+|         200 | AD_ASST    | Administration  | Seattle             |
+|         201 | MK_MAN     | Marketing       | Toronto             |
+|         202 | MK_REP     | Marketing       | Toronto             |
+|         205 | AC_MGR     | Accounting      | Seattle             |
+|         206 | AC_ACCOUNT | Accounting      | Seattle             |
++-------------+------------+-----------------+---------------------+
+20 rows in set (0.00 sec)
+
+
+---------------Self join---------(relating a table to itself- subset and main set   employee_id and manager_id)
+
+
+
+select
+e.first_name emp, m.first_name mgr
+from employees e join employees m
+on(e.manager_id=m.employee_id);
++-----------+-----------+
+| emp       | mgr       |
++-----------+-----------+
+| Neena     | Steven    |
+| Lex       | Steven    |
+| Alexander | Lex       |
+| Bruce     | Alexander |
+| Bruce     | Alexander |
+| Diana     | Alexander |
+| Kevin     | Steven    |
+| Trenna    | Kevin     |
+| Curtis    | Kevin     |
+| Randall   | Kevin     |
+| Peter     | Kevin     |
+| Eleni     | Steven    |
+| Ellen     | Eleni     |
+| Jonathan  | Eleni     |
+| Kimberely | Eleni     |
+| Jennifer  | Neena     |
+| Michael   | Steven    |
+| Pat       | Michael   |
+| Shelley   | Neena     |
+| William   | Shelley   |
++-----------+-----------+
+20 rows in set (0.00 sec)
+
+
+-----------------outer joins-------------
+
+  a. LOJ
+  b. ROJ
+  c. FOJ
+
+----LEFT JOIN
+
+select 
+e.employee_id,d.department_name
+from employees e left join departments d
+on(e.department_id=d.department_id);
+
++-------------+-----------------+
+| employee_id | department_name |
++-------------+-----------------+
+|         100 | Executive       |
+|         101 | Executive       |
+|         102 | Executive       |
+|         103 | IT              |
+|         104 | IT              |
+|         106 | IT              |
+|         107 | IT              |
+|         124 | Shipping        |
+|         141 | Shipping        |
+|         142 | Shipping        |
+|         143 | Shipping        |
+|         144 | Shipping        |
+|         149 | Sales           |
+|         174 | Sales           |
+|         176 | Sales           |
+|         178 | NULL            |
+|         200 | Administration  |
+|         201 | Marketing       |
+|         202 | Marketing       |
+|         205 | Accounting      |
+|         206 | Accounting      |
++-------------+-----------------+
+
+
+----------right join-------
+
+select
+e.employee_id,d.department_name
+from employees e right join departments d
+on(e.department_id=d.department_id);
+
++-------------+-----------------+
+| employee_id | department_name |
++-------------+-----------------+
+|         100 | Executive       |
+|         101 | Executive       |
+|         102 | Executive       |
+|         103 | IT              |
+|         104 | IT              |
+|         106 | IT              |
+|         107 | IT              |
+|         124 | Shipping        |
+|         141 | Shipping        |
+|         142 | Shipping        |
+|         143 | Shipping        |
+|         144 | Shipping        |
+|         149 | Sales           |
+|         174 | Sales           |
+|         176 | Sales           |
+|         200 | Administration  |
+|         201 | Marketing       |
+|         202 | Marketing       |
+|         205 | Accounting      |
+|         206 | Accounting      |
+|        NULL | Contracting     |
++-------------+-----------------+
+21 rows in set (0.02 sec)
+
+
+-----------Full Outer join-------------
+ 
+----oracle--
+select
+e.employee_id,d.department_name
+from employees e full join departments d
+on(e.department_id=d.department_id);
+
+----mariadb----
+select
+e.employee_id,d.department_name
+from employees e left join departments d
+on(e.department_id=d.department_id)
+union
+select
+e.employee_id,d.department_name
+from employees e right join departments d
+on(e.department_id=d.department_id);
+
+| employee_id | department_name |
++-------------+-----------------+
+|         100 | Executive       |
+|         101 | Executive       |
+|         102 | Executive       |
+|         103 | IT              |
+|         104 | IT              |
+|         106 | IT              |
+|         107 | IT              |
+|         124 | Shipping        |
+|         141 | Shipping        |
+|         142 | Shipping        |
+|         143 | Shipping        |
+|         144 | Shipping        |
+|         149 | Sales           |
+|         174 | Sales           |
+|         176 | Sales           |
+|         178 | NULL            |
+|         200 | Administration  |
+|         201 | Marketing       |
+|         202 | Marketing       |
+|         205 | Accounting      |
+|         206 | Accounting      |
+|        NULL | Contracting     |
++-------------+-----------------+
+
+-----------Non-equi join----------
+       we use 'between and' operator here
+
+select
+e.employee_id,e.job_id,e.salary
+from employees e join jobs j
+where e.salary between j.min_salary and j.max_salary;
++-------------+------------+--------+
+| employee_id | job_id     | salary |
++-------------+------------+--------+
+|         100 | AD_PRES    |  24000 |
+|         100 | AD_PRES    |  24000 |
+|         101 | AD_VP      |  17000 |
+|         101 | AD_VP      |  17000 |
+|         102 | AD_VP      |  17000 |
+|         102 | AD_VP      |  17000 |
+|         103 | IT_PROG    |   9000 |
+|         103 | IT_PROG    |   9000 |
+|         103 | IT_PROG    |   9000 |
+|         103 | IT_PROG    |   9000 |
+|         103 | IT_PROG    |   9000 |
+|         103 | IT_PROG    |   9000 |
+|         104 | IT_PROG    |   6000 |
+|         104 | IT_PROG    |   6000 |
+|         104 | IT_PROG    |   6000 |
+|         104 | IT_PROG    |   6000 |
+|         104 | IT_PROG    |   6000 |
+|         104 | IT_PROG    |   6000 |
+|         106 | IT_PROG    |   9000 |
+|         106 | IT_PROG    |   9000 |
+|         106 | IT_PROG    |   9000 |
+|         106 | IT_PROG    |   9000 |
+|         106 | IT_PROG    |   9000 |
+|         106 | IT_PROG    |   9000 |
+|         107 | IT_PROG    |   4200 |
+|         107 | IT_PROG    |   4200 |
+|         107 | IT_PROG    |   4200 |
+|         107 | IT_PROG    |   4200 |
+|         107 | IT_PROG    |   4200 |
+|         124 | ST_MAN     |   5800 |
+|         124 | ST_MAN     |   5800 |
+|         124 | ST_MAN     |   5800 |
+|         124 | ST_MAN     |   5800 |
+|         124 | ST_MAN     |   5800 |
+|         141 | ST_CLERK   |   3500 |
+|         141 | ST_CLERK   |   3500 |
+|         142 | ST_CLERK   |   3100 |
+|         142 | ST_CLERK   |   3100 |
+|         143 | ST_CLERK   |   2600 |
+|         144 | ST_CLERK   |   2500 |
+|         149 | SA_MAN     |  10500 |
+|         149 | SA_MAN     |  10500 |
+|         149 | SA_MAN     |  10500 |
+|         149 | SA_MAN     |  10500 |
+|         174 | SA_REP     |  11000 |
+|         174 | SA_REP     |  11000 |
+|         174 | SA_REP     |  11000 |
+|         174 | SA_REP     |  11000 |
+|         176 | SA_REP     |   8600 |
+|         176 | SA_REP     |   8600 |
+|         176 | SA_REP     |   8600 |
+|         176 | SA_REP     |   8600 |
+|         176 | SA_REP     |   8600 |
+|         178 | SA_REP     |   7000 |
+|         178 | SA_REP     |   7000 |
+|         178 | SA_REP     |   7000 |
+|         178 | SA_REP     |   7000 |
+|         178 | SA_REP     |   7000 |
+|         200 | AD_ASST    |   4400 |
+|         200 | AD_ASST    |   4400 |
+|         200 | AD_ASST    |   4400 |
+|         200 | AD_ASST    |   4400 |
+|         200 | AD_ASST    |   4400 |
+|         201 | MK_MAN     |  13000 |
+|         201 | MK_MAN     |  13000 |
+|         201 | MK_MAN     |  13000 |
+|         202 | MK_REP     |   6000 |
+|         202 | MK_REP     |   6000 |
+|         202 | MK_REP     |   6000 |
+|         202 | MK_REP     |   6000 |
+|         202 | MK_REP     |   6000 |
+|         202 | MK_REP     |   6000 |
+|         205 | AC_MGR     |  12000 |
+|         205 | AC_MGR     |  12000 |
+|         205 | AC_MGR     |  12000 |
+|         205 | AC_MGR     |  12000 |
+|         206 | AC_ACCOUNT |   8300 |
+|         206 | AC_ACCOUNT |   8300 |
+|         206 | AC_ACCOUNT |   8300 |
+|         206 | AC_ACCOUNT |   8300 |
+|         206 | AC_ACCOUNT |   8300 |
+|         206 | AC_ACCOUNT |   8300 |
++-------------+------------+--------+
+
+
+--------------cross join----
+    don't match with primary key
+    multiplys one elememt of one table with another of another table
+
+select
+employee_id,department_name
+from employees cross join departments;
++-------------+-----------------+
+| employee_id | department_name |
++-------------+-----------------+
+|         100 | Administration  |
+|         100 | Marketing       |
+|         100 | Shipping        |
+|         100 | IT              |
+|         100 | Sales           |
+|         100 | Executive       |
+|         100 | Accounting      |
+|         100 | Contracting     |
+|         101 | Administration  |
+|         101 | Marketing       |
+|         101 | Shipping        |
+|         101 | IT              |
+|         101 | Sales           |
+|         101 | Executive       |
+|         101 | Accounting      |
+|         101 | Contracting     |
+|         102 | Administration  |
+|         102 | Marketing       |
+|         102 | Shipping        |
+|         102 | IT              |
+|         102 | Sales           |
+|         102 | Executive       |
+|         102 | Accounting      |
+|         102 | Contracting     |
+|         103 | Administration  |
+|         103 | Marketing       |
+|         103 | Shipping        |
+|         103 | IT              |
+|         103 | Sales           |
+|         103 | Executive       |
+|         103 | Accounting      |
+|         103 | Contracting     |
+|         104 | Administration  |
+|         104 | Marketing       |
+|         104 | Shipping        |
+|         104 | IT              |
+|         104 | Sales           |
+|         104 | Executive       |
+|         104 | Accounting      |
+|         104 | Contracting     |
+|         106 | Administration  |
+|         106 | Marketing       |
+|         106 | Shipping        |
+|         106 | IT              |
+|         106 | Sales           |
+|         106 | Executive       |
+|         106 | Accounting      |
+|         106 | Contracting     |
+|         107 | Administration  |
+|         107 | Marketing       |
+|         107 | Shipping        |
+|         107 | IT              |
+|         107 | Sales           |
+|         107 | Executive       |
+|         107 | Accounting      |
+|         107 | Contracting     |
+|         124 | Administration  |
+|         124 | Marketing       |
+|         124 | Shipping        |
+|         124 | IT              |
+|         124 | Sales           |
+|         124 | Executive       |
+|         124 | Accounting      |
+|         124 | Contracting     |
+|         141 | Administration  |
+|         141 | Marketing       |
+|         141 | Shipping        |
+|         141 | IT              |
+|         141 | Sales           |
+|         141 | Executive       |
+|         141 | Accounting      |
+|         141 | Contracting     |
+|         142 | Administration  |
+|         142 | Marketing       |
+|         142 | Shipping        |
+|         142 | IT              |
+|         142 | Sales           |
+|         142 | Executive       |
+|         142 | Accounting      |
+|         142 | Contracting     |
+|         143 | Administration  |
+|         143 | Marketing       |
+|         143 | Shipping        |
+|         143 | IT              |
+|         143 | Sales           |
+|         143 | Executive       |
+|         143 | Accounting      |
+|         143 | Contracting     |
+|         144 | Administration  |
+|         144 | Marketing       |
+|         144 | Shipping        |
+|         144 | IT              |
+|         144 | Sales           |
+|         144 | Executive       |
+|         144 | Accounting      |
+|         144 | Contracting     |
+|         149 | Administration  |
+|         149 | Marketing       |
+|         149 | Shipping        |
+|         149 | IT              |
+|         149 | Sales           |
+|         149 | Executive       |
+|         149 | Accounting      |
+|         149 | Contracting     |
+|         174 | Administration  |
+|         174 | Marketing       |
+|         174 | Shipping        |
+|         174 | IT              |
+|         174 | Sales           |
+|         174 | Executive       |
+|         174 | Accounting      |
+|         174 | Contracting     |
+|         176 | Administration  |
+|         176 | Marketing       |
+|         176 | Shipping        |
+|         176 | IT              |
+|         176 | Sales           |
+|         176 | Executive       |
+|         176 | Accounting      |
+|         176 | Contracting     |
+|         178 | Administration  |
+|         178 | Marketing       |
+|         178 | Shipping        |
+|         178 | IT              |
+|         178 | Sales           |
+|         178 | Executive       |
+|         178 | Accounting      |
+|         178 | Contracting     |
+|         200 | Administration  |
+|         200 | Marketing       |
+|         200 | Shipping        |
+|         200 | IT              |
+|         200 | Sales           |
+|         200 | Executive       |
+|         200 | Accounting      |
+|         200 | Contracting     |
+|         201 | Administration  |
+|         201 | Marketing       |
+|         201 | Shipping        |
+|         201 | IT              |
+|         201 | Sales           |
+|         201 | Executive       |
+|         201 | Accounting      |
+|         201 | Contracting     |
+|         202 | Administration  |
+|         202 | Marketing       |
+|         202 | Shipping        |
+|         202 | IT              |
+|         202 | Sales           |
+|         202 | Executive       |
+|         202 | Accounting      |
+|         202 | Contracting     |
+|         205 | Administration  |
+|         205 | Marketing       |
+|         205 | Shipping        |
+|         205 | IT              |
+|         205 | Sales           |
+|         205 | Executive       |
+|         205 | Accounting      |
+|         205 | Contracting     |
+|         206 | Administration  |
+|         206 | Marketing       |
+|         206 | Shipping        |
+|         206 | IT              |
+|         206 | Sales           |
+|         206 | Executive       |
+|         206 | Accounting      |
+|         206 | Contracting     |
++-------------+-----------------+
+168 rows in set (0.00 sec)
+note that there are 168 rows(21*8)
+
+If there is any logical error in any other join statements, then output is cross join only.
+
+----Extra restrictions using where and 'and'------
+select
+e.employee_id,d.department_name,d.location_id
+from employees e right join departments d
+on(e.department_id=d.department_id)
+where d.location_id=1700
+and d.department_name='Accounting';
++-------------+-----------------+-------------+
+| employee_id | department_name | location_id |
++-------------+-----------------+-------------+
+|         205 | Accounting      |        1700 |
+|         206 | Accounting      |        1700 |
++-------------+-----------------+-------------+
+
+------------------------------------------------------------------------------------------------------------------------------
+
+-----------------------12 CODD RULES-------------------------
+Rule 1: Information Rule
+The data stored in a database, may it be user data or metadata, must be a value of some table cell. Everything in a database must be stored in a table format.
+
+Rule 2: Guaranteed Access Rule
+Every single data element (value) is guaranteed to be accessible logically with a combination of table-name, primary-key (row value), and attribute-name (column value). No other means, such as pointers, can be used to access data.
+
+Rule 3: Systematic Treatment of NULL Values
+The NULL values in a database must be given a systematic and uniform treatment. This is a very important rule because a NULL can be interpreted as one the following - data is missing, data is not known, or data is not applicable.
+
+Rule 4: Active Online Catalog
+The structure description of the entire database must be stored in an online catalog, known as data dictionary, which can be accessed by authorized users. Users can use the same query language to access the catalog which they use to access the database itself.
+
+Rule 5: Comprehensive Data Sub-Language Rule
+A database can only be accessed using a language having linear syntax that supports data definition, data manipulation, and transaction management operations. This language can be used directly or by means of some application. If the database allows access to data without any help of this language, then it is considered as a violation.
+
+Rule 6: View Updating Rule
+All the views of a database, which can theoretically be updated, must also be updatable by the system.
+
+Rule 7: High-Level Insert, Update, and Delete Rule
+A database must support high-level insertion, updation, and deletion. This must not be limited to a single row, that is, it must also support union, intersection and minus operations to yield sets of data records.
+
+Rule 8: Physical Data Independence
+The data stored in a database must be independent of the applications that access the database. Any change in the physical structure of a database must not have any impact on how the data is being accessed by external applications.
+
+Rule 9: Logical Data Independence
+The logical data in a database must be independent of its user’s view (application). Any change in logical data must not affect the applications using it. For example, if two tables are merged or one is split into two different tables, there should be no impact or change on the user application. This is one of the most difficult rule to apply.
+
+Rule 10: Integrity Independence
+A database must be independent of the application that uses it. All its integrity constraints can be independently modified without the need of any change in the application. This rule makes a database independent of the front-end application and its interface.
+
+Rule 11: Distribution Independence
+The end-user must not be able to see that the data is distributed over various locations. Users should always get the impression that the data is located at one site only. This rule has been regarded as the foundation of distributed database systems.
+
+Rule 12: Non-Subversion Rule
+If a system has an interface that provides access to low-level records, then the interface must not be able to subvert the system and bypass security and integrity constraints.
+
+
+
+NULL!=0
+NULL!=NULL
+NULL+NULL = NULL
+NULL-NULL = NULL
+NULL*NULL = NULL
+NULL/NULL = NULL
+
+
+------------------------------------------------------------------------------------------------------------------------------
+
+----subquery----
+              when we want to compare the data....
+              join is for reporting something eg. empoyees working on differnet locations
+
+two types:
+  1. single row(<,>.<=,>=,=,<> or !=)
+        subquery returns single value;
+
+select employee_id,salary
+from employees
+where salary>(select salary from employees where first_name='Pat');
++-------------+--------+
+| employee_id | salary |
++-------------+--------+
+|         100 |  24000 |
+|         101 |  17000 |
+|         102 |  17000 |
+|         103 |   9000 |
+|         106 |   9000 |
+|         149 |  10500 |
+|         174 |  11000 |
+|         176 |   8600 |
+|         178 |   7000 |
+|         201 |  13000 |
+|         205 |  12000 |
+|         206 |   8300 |
++-------------+--------+
+12 rows in set (0.00 sec)
+//note that salary of Pat=6000
+
+
+select employee_id,salary
+from employees
+where salary>(select salary from employees where first_name='Pat')
+and job_id=(select job_id from employees where first_name='Peter'); 
+//Empty set
+
+select last_name,job_id,salary
+from employees
+where job_id=
+              (select job_id
+               from employees
+               where employee_id=141  )
+and salary>
+        (select salary 
+         from employees 
+         where employee_id=143 );
+
++-----------+----------+--------+
+| last_name | job_id   | salary |
++-----------+----------+--------+
+| Rajs      | ST_CLERK |   3500 |
+| Davies    | ST_CLERK |   3100 |
++-----------+----------+--------+
+
+select employee_id,salary
+from employees
+where salary>(select min(salary) from employees);
++-------------+--------+
+| employee_id | salary |
++-------------+--------+
+|         100 |  24000 |
+|         101 |  17000 |
+|         102 |  17000 |
+|         103 |   9000 |
+|         104 |   6000 |
+|         106 |   9000 |
+|         107 |   4200 |
+|         124 |   5800 |
+|         141 |   3500 |
+|         142 |   3100 |
+|         143 |   2600 |
+|         149 |  10500 |
+|         174 |  11000 |
+|         176 |   8600 |
+|         178 |   7000 |
+|         200 |   4400 |
+|         201 |  13000 |
+|         202 |   6000 |
+|         205 |  12000 |
+|         206 |   8300 |
++-------------+--------+
+
+--having clause 
+
+select department_id,min(salary)
+from employees
+group by department_id
+having min(salary) > (select min(salary)
+                      from employees
+                       where department_id = 50);
++---------------+-------------+
+| department_id | min(salary) |
++---------------+-------------+
+|          NULL |        7000 |
+|            10 |        4400 |
+|            20 |        6000 |
+|            60 |        4200 |
+|            80 |        8600 |
+|            90 |       17000 |
+|           110 |        8300 |
++---------------+-------------+
+20 rows in set (0.01 sec)
+// min slary=2500
+
+=====================================================================================================
+  2. multi row (IN,ANY,All)
+        subquery returns multiple values;
+
+----any--- one value comopared
+select employee_id,job_id,salary            
+from employees
+where salary<any(select salary
+                 from employees
+                  where job_id='IT_PROG')
+AND JOB_ID<>'IT_PROG';                   //9000,6000,4200 result of subquery
++-------------+------------+--------+
+| employee_id | job_id     | salary |
++-------------+------------+--------+
+|         124 | ST_MAN     |   5800 |
+|         141 | ST_CLERK   |   3500 |
+|         142 | ST_CLERK   |   3100 |
+|         143 | ST_CLERK   |   2600 |
+|         144 | ST_CLERK   |   2500 |
+|         176 | SA_REP     |   8600 |
+|         178 | SA_REP     |   7000 |
+|         200 | AD_ASST    |   4400 |
+|         202 | MK_REP     |   6000 |
+|         206 | AC_ACCOUNT |   8300 |
++-------------+------------+--------+
+
+
+
+select employee_id,job_id,salary
+from employees where salary> any(select salary
+                                 from employees     
+                                 where job_id='IT_PROG')
+AND JOB_ID<>'IT_PROG';
++-------------+------------+--------+
+| employee_id | job_id     | salary |
++-------------+------------+--------+
+|         100 | AD_PRES    |  24000 |
+|         101 | AD_VP      |  17000 |
+|         102 | AD_VP      |  17000 |
+|         124 | ST_MAN     |   5800 |
+|         149 | SA_MAN     |  10500 |
+|         174 | SA_REP     |  11000 |
+|         176 | SA_REP     |   8600 |
+|         178 | SA_REP     |   7000 |
+|         200 | AD_ASST    |   4400 |
+|         201 | MK_MAN     |  13000 |
+|         202 | MK_REP     |   6000 |
+|         205 | AC_MGR     |  12000 |
+|         206 | AC_ACCOUNT |   8300 |
++-------------+------------+--------+
+
+
+
+select employee_id,job_id,salary
+from employees where salary> all(select salary
+                                 from employees     
+                                 where job_id='IT_PROG')
+AND JOB_ID<>'IT_PROG';
++-------------+---------+--------+
+| employee_id | job_id  | salary |
++-------------+---------+--------+
+|         100 | AD_PRES |  24000 |
+|         101 | AD_VP   |  17000 |
+|         102 | AD_VP   |  17000 |
+|         149 | SA_MAN  |  10500 |
+|         174 | SA_REP  |  11000 |
+|         201 | MK_MAN  |  13000 |
+|         205 | AC_MGR  |  12000 |
++-------------+---------+--------+
+
+
+
+select employee_id,job_id,salary
+from employees where salary> all(select salary
+                                 from employees     
+                                 where job_id='IT_PROG')
+AND JOB_ID<>'IT_PROG';
+
++-------------+---------+--------+
+| employee_id | job_id  | salary |
++-------------+---------+--------+
+|         100 | AD_PRES |  24000 |
+|         101 | AD_VP   |  17000 |
+|         102 | AD_VP   |  17000 |
+|         149 | SA_MAN  |  10500 |
+|         174 | SA_REP  |  11000 |
+|         201 | MK_MAN  |  13000 |
+|         205 | AC_MGR  |  12000 |
++-------------+---------+--------+
+
+
+
+-----in----
+
+select employee_id,job_id,salary
+from employees where salary in (select salary
+                                 from employees     
+                                 where job_id='IT_PROG')
+AND JOB_ID<>'IT_PROG';
++-------------+--------+--------+
+| employee_id | job_id | salary |
++-------------+--------+--------+
+|         202 | MK_REP |   6000 |
++-------------+--------+--------+
+
+
+==============================================================================================================================================================
+
+
+--------------DDL Statements----------------
+
+Truncate,Rename,Create, Alter,Drop
+           
+                There is no datatype called integer in oracle
+                number(includes float) is in oracle
+
+--table creation
+
+create table dept(
+deptid int primary key,
+dept_name varchar(30) unique);
+
+MariaDB [mydb]> desc dept;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| deptid    | int(11)     | NO   | PRI | NULL    |       |
+| dept_name | varchar(30) | YES  | UNI | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+
+
+create table emp(
+emp_id varchar(15) primary key not null,
+emp_name varchar(50) unique,
+phone_no varchar(15) not null,
+deptid int,
+sal int check(sal>20000),
+country varchar(25) not null default 'India',
+foreign key (deptid) references dept(deptid)
+);
+
+MariaDB [mydb]> desc emp;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| emp_id   | varchar(15) | NO   | PRI | NULL    |       |
+| emp_name | varchar(50) | YES  | UNI | NULL    |       |
+| phone_no | varchar(15) | NO   |     | NULL    |       |
+| deptid   | int(11)     | YES  | MUL | NULL    |       |
+| sal      | int(11)     | YES  |     | NULL    |       |
+| country  | varchar(25) | NO   |     | India   |       |
++----------+-------------+------+-----+---------+-------+
+//mul neans foeign key
+
+
+-------------------------Alter table (change in structure of table)--------------------------
+
+1. add a new column
+2. drop an old column
+3. rename columns
+4. modify the datatypes of columns
+5. add constraints
+6. drop constarints
+
+
+alter table dept
+add column loc_id int;
+
+MariaDB [mydb]> desc dept; 
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| deptid    | int(11)     | NO   | PRI | NULL    |       |
+| dept_name | varchar(30) | YES  | UNI | NULL    |       |
+| loc_id    | int(11)     | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+
+
+
+----column shouldn't have any data for modify to avoid inconsistency----
+alter table dept
+modify loc_id tinyint;
+
+MariaDB [mydb]> desc dept;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| deptid    | int(11)     | NO   | PRI | NULL    |       |
+| dept_name | varchar(30) | YES  | UNI | NULL    |       |
+| loc_id    | tinyint(4)  | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+
+
+alter table dept
+drop column loc_id ;
+
+MariaDB [mydb]> desc dept;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| deptid    | int(11)     | NO   | PRI | NULL    |       |
+| dept_name | varchar(30) | YES  | UNI | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+
+----------add a constraint--- mariadb/mysql
+
+alter table dept
+modify loc_id int unique;
+
+
+---oracle
+
+alter table dept
+add constraint loc_pk primary key
+(loc_id);
+
+
+-----after keyword----
+           ---only in MariaDB/MySQl
+
+alter table dept
+add city varchar(100) not null
+after deptid,
+add region varchar(14) not null
+after loc_id;
+
+MariaDB [mydb]> desc dept;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| deptid    | int(11)      | NO   | PRI | NULL    |       |
+| city      | varchar(100) | NO   |     | NULL    |       |
+| dept_name | varchar(30)  | YES  | UNI | NULL    |       |
+| loc_id    | int(11)      | YES  |     | NULL    |       |
+| region    | varchar(14)  | NO   |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+
+
+--------Rename---------(changing column name +constraints+ datatypes whereas modify only for changing datatype and constraints)-----------
+
+alter table dept
+change column region dept_regions
+varchar(20) not null;
+
+MariaDB [mydb]> desc dept;
++--------------+--------------+------+-----+---------+-------+
+| Field        | Type         | Null | Key | Default | Extra |
++--------------+--------------+------+-----+---------+-------+
+| deptid       | int(11)      | NO   | PRI | NULL    |       |
+| city         | varchar(100) | NO   |     | NULL    |       |
+| dept_name    | varchar(30)  | YES  | UNI | NULL    |       |
+| loc_id       | int(11)      | YES  |     | NULL    |       |
+| dept_regions | varchar(20)  | NO   |     | NULL    |       |
++--------------+--------------+------+-----+---------+-------+
+5 rows in set (0.02 sec)
+
+
+--------------Renaming a table---------------
+
+alter table dept
+rename to dept_1;
+
+MariaDB [mydb]> desc dept;
+ERROR 1146 (42S02): Table 'mydb.dept' doesn't exist
+
+MariaDB [mydb]> desc dept_1;
++--------------+--------------+------+-----+---------+-------+
+| Field        | Type         | Null | Key | Default | Extra |
++--------------+--------------+------+-----+---------+-------+
+| deptid       | int(11)      | NO   | PRI | NULL    |       |
+| city         | varchar(100) | NO   |     | NULL    |       |
+| dept_name    | varchar(30)  | YES  | UNI | NULL    |       |
+| loc_id       | int(11)      | YES  |     | NULL    |       |
+| dept_regions | varchar(20)  | NO   |     | NULL    |       |
++--------------+--------------+------+-----+---------+-------+
+5 rows in set (0.02 sec)
+
+
+-------oracle----
+rename dept to dept_1;
+
+------------first keyword (adding column at first position)---------------
+alter table dept_1
+modify
+city varchar(10) first;
+
+MariaDB [mydb]> desc dept_1;
++--------------+-------------+------+-----+---------+-------+
+| Field        | Type        | Null | Key | Default | Extra |
++--------------+-------------+------+-----+---------+-------+
+| city         | varchar(10) | YES  |     | NULL    |       |
+| deptid       | int(11)     | NO   | PRI | NULL    |       |
+| dept_name    | varchar(30) | YES  | UNI | NULL    |       |
+| loc_id       | int(11)     | YES  |     | NULL    |       |
+| dept_regions | varchar(20) | NO   |     | NULL    |       |
++--------------+-------------+------+-----+---------+-------+
+5 rows in set (0.02 sec)
+
+
+-----------------drop table---------------
+
+drop table dept_1;
+
+
+
+====================================VIEWS====================================================
+
+1.logical object or virtual object.
+2. doesn't occupy any physical space in db
+3. enhances security by providing views and not the whole database to the end user.
+
+Views are of two types:
+
+1. simple view
+
+-----mariaDb and oracle------
+create view emp_v
+as
+select employee_id,first_name, salary,department_id
+from employees;
+
+MariaDB [mydb]> desc emp_v;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| employee_id   | int(11)     | NO   |     | NULL    |       |
+| first_name    | varchar(20) | YES  |     | NULL    |       |
+| salary        | float       | YES  |     | NULL    |       |
+| department_id | int(11)     | YES  |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+
+---mariadb /mysql---
+alter view emp_v
+as
+select employee_id,first_name, salary,job_id,department_id
+from employees
+where department_id in (20,90);
+
+MariaDB [mydb]> desc emp_v;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| employee_id   | int(11)     | NO   |     | NULL    |       |
+| first_name    | varchar(20) | YES  |     | NULL    |       |
+| salary        | float       | YES  |     | NULL    |       |
+| job_id        | varchar(10) | NO   |     | NULL    |       |
+| department_id | int(11)     | YES  |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+
+
+-----oracle ----
+
+create or replace view emp_v
+as
+select employee_id,first_name,salary,job_id,department_id
+from employees;
+
+
+2. complex view  (will have more than one table)
+//In simple view, we can perform DML operations. In complex view, we can't perform DML operations(insert, delete, modify).
+
+create view emp_dept
+as
+select employee_id,department_name
+from employees natural join departments;
+
+MariaDB [mydb]> desc  emp_dept;
++-----------------+-------------+------+-----+---------+-------+
+| Field           | Type        | Null | Key | Default | Extra |
++-----------------+-------------+------+-----+---------+-------+
+| employee_id     | int(11)     | NO   |     | NULL    |       |
+| department_name | varchar(30) | NO   |     | NULL    |       |
++-----------------+-------------+------+-----+---------+-------+
+
+
+create view empdept
+as
+select 
+employee_id,department_name,l.city,l.location_id
+from employees e join departments d
+on(e.department_id=d.department_id)
+join locations l
+on(d.location_id=l.location_id);
+
+MariaDB [mydb]> desc empdept;
++-----------------+-------------+------+-----+---------+-------+
+| Field           | Type        | Null | Key | Default | Extra |
++-----------------+-------------+------+-----+---------+-------+
+| employee_id     | int(11)     | NO   |     | NULL    |       |
+| department_name | varchar(30) | NO   |     | NULL    |       |
+| city            | varchar(30) | NO   |     | NULL    |       |
+| location_id     | int(11)     | NO   |     | NULL    |       |
++-----------------+-------------+------+-----+---------+-------+
+
+MariaDB [mydb]> select * from empdept;
++-------------+-----------------+---------------------+-------------+
+| employee_id | department_name | city                | location_id |
++-------------+-----------------+---------------------+-------------+
+|         100 | Executive       | Seattle             |        1700 |
+|         101 | Executive       | Seattle             |        1700 |
+|         102 | Executive       | Seattle             |        1700 |
+|         103 | IT              | Southlake           |        1400 |
+|         104 | IT              | Southlake           |        1400 |
+|         106 | IT              | Southlake           |        1400 |
+|         107 | IT              | Southlake           |        1400 |
+|         124 | Shipping        | South San Francisco |        1500 |
+|         141 | Shipping        | South San Francisco |        1500 |
+|         142 | Shipping        | South San Francisco |        1500 |
+|         143 | Shipping        | South San Francisco |        1500 |
+|         144 | Shipping        | South San Francisco |        1500 |
+|         149 | Sales           | Oxford              |        2500 |
+|         174 | Sales           | Oxford              |        2500 |
+|         176 | Sales           | Oxford              |        2500 |
+|         200 | Administration  | Seattle             |        1700 |
+|         201 | Marketing       | Toronto             |        1800 |
+|         202 | Marketing       | Toronto             |        1800 |
+|         205 | Accounting      | Seattle             |        1700 |
+|         206 | Accounting      | Seattle             |        1700 |
++-------------+-----------------+---------------------+-------------+
+
+// alter in same way as normal view
+
+
+---------------show all views in the database ---------------------------------------------
+
+show full tables in mydb
+where table_type like 'view';
+
++----------------+------------+
+| Tables_in_mydb | Table_type |
++----------------+------------+
+| emp_dept       | VIEW       |
+| emp_v          | VIEW       |
+| empdept        | VIEW       |
++----------------+------------+
+
+
+-------------views with functions-------------------------------------------
+// if a view has a group by clause and aggregate functions then no DML operations
+
+create or replace view min_sal
+as
+select min(salary) M_Sal, department_id dept_id
+from employees
+group by department_id;
+
+MariaDB [mydb]> desc min_sal;
++---------+---------+------+-----+---------+-------+
+| Field   | Type    | Null | Key | Default | Extra |
++---------+---------+------+-----+---------+-------+
+| M_Sal   | float   | YES  |     | NULL    |       |
+| dept_id | int(11) | YES  |     | NULL    |       |
++---------+---------+------+-----+---------+-------+
+
+MariaDB [mydb]> select * from min_sal;
++-------+---------+
+| M_Sal | dept_id |
++-------+---------+
+|  7000 |    NULL |
+|  4400 |      10 |
+|  6000 |      20 |
+|  2500 |      50 |
+|  4200 |      60 |
+|  8600 |      80 |
+| 17000 |      90 |
+|  8300 |     110 |
++-------+---------+
+
+----------drop a view---------
+
+drop view empdept;
+
+---------------------INDEX-------------------------------------
+
+//index enhances the query performance
+default index is b-tree index. (read about b-tree index)
+
+------creating an index------
+
+--mysql/mariadb/oracle
+create index dept_id on dept_1(deptid);           //dept_1 is table name and deptid is attribute.
+create index dept_id on dept_1(city,dept_name);
+
+
+//mariadb
+alter table dept_1 drop index dept_id;             // drp an index
+
+//oracle
+drop index dept_1;
+
+
+-----------------create index alonmg with table
+
+------mysql/mariadb ------------- not in oracle beacuse in oracle, whenever a primary key is created, an index is automatically created
+create table t_2
+(
+id int,
+name varchar(20),
+index(name)
+);
+
+--composite index // index on multiple attributes of a table
+
+create table t_3
+(
+c1 int,
+c2 varchar(20),
+c3 int,
+c4 int,
+index(c1,c2)
+);
+
+
+---------to list indexes;
+--MySQL/MariaDB
+
+show index from dept_1;
+
++--------+------------+-----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table  | Non_unique | Key_name  | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++--------+------------+-----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| dept_1 |          0 | PRIMARY   |            1 | deptid      | A         |           0 |     NULL | NULL   |      | BTREE      |         |               |
+| dept_1 |          0 | dept_name |            1 | dept_name   | A         |           0 |     NULL | NULL   | YES  | BTREE      |         |               |
+| dept_1 |          1 | dept_id   |            1 | deptid      | A         |           0 |     NULL | NULL   |      | BTREE      |         |               |
++--------+------------+-----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+3 rows in set (0.02 sec)
+
+--oracle
+
+select index_name from user_indexes;
+
+---when to index-------
+the columns which are frequently used.
+when a table is frequently accessed.
+columns which you refer in where condition.
+when a column has larger set of null values.
+
+------------when not to index-----------
+when a table is frequently updating.
+
+
+================================SEQUENCE========================================================
+//sequence is for application performance
+
+
+//mechanism which is an automatic number generative systems.
+
+--MariaDB/MySQL/oracle 12c
+
+create table t3(
+c1 int auto_increment,
+primary key(c1),
+c2 int not null,
+c3 int not null
+);
+
+insert into t3(c1,c2,c3) values(null,100,120);
+
+MariaDB [mydb]> select * from t3;
++----+-----+-----+
+| c1 | c2  | c3  |
++----+-----+-----+
+|  1 | 100 | 120 |
++----+-----+-----+
+
+insert into t3(c2,c3) values(100,120);
+insert into t3(c2,c3) values(100,120);
+
+MariaDB [mydb]> select * from t3;
++----+-----+-----+
+| c1 | c2  | c3  |
++----+-----+-----+
+|  1 | 100 | 120 |
+|  2 | 100 | 120 |
+|  3 | 100 | 120 |
++----+-----+-----+
+
+----change the default value to 100-------
+
+alter table t3 auto_increment=100;
+
+insert into t3(c2,c3) values(100,120);
+MariaDB [mydb]> select * from t3;
++-----+-----+-----+
+| c1  | c2  | c3  |
++-----+-----+-----+
+|   1 | 100 | 120 |
+|   2 | 100 | 120 |
+|   3 | 100 | 120 |
+|   4 | 100 | 120 |
+| 100 | 100 | 120 |
++-----+-----+-----+
+
+
+
+
+--oracle 10g/11g
+
+create sequence seq1
+increment by 10 
+start with 100;
+
+
+===================DML====================================
+
+insert
+update
+delete
+
+--insert
+
+insert into t3 values(null,100,120);
+insert into t3(c2,c3) values(100,120);   //when order not known or few info is to be filled.
+
+
+--update
+
+update t3
+set c3=1001
+where c1=1;
+
+MariaDB [mydb]> select * from t3;
++-----+-----+------+
+| c1  | c2  | c3   |
++-----+-----+------+
+|   1 | 100 | 1001 |
+|   2 | 100 |  120 |
+|   3 | 100 |  120 |
+|   4 | 100 |  120 |
+| 100 | 100 |  120 |
++-----+-----+------+
+
+
+--delete
+
+delete from t3 where c1=1;
+
+MariaDB [mydb]> select * from t3;
++-----+-----+-----+
+| c1  | c2  | c3  |
++-----+-----+-----+
+|   2 | 100 | 120 |
+|   3 | 100 | 120 |
+|   4 | 100 | 120 |
+| 100 | 100 | 120 |
++-----+-----+-----+
+
+
+delete from t3;     //delete whole table;
+
+
+==========================TRUNCATE  (DDL) ====================================
+Data gone but structure remains as it is.
+delete without where clause.
+
+in drop structure and data both are gone.
+In truncate and drop, we can't get data back
+In delete we can get the data back.
+
+truncate table t3;
+
+
+=======================================TRANSACTIONS======================
+--TCL (Commit, Rollback,Savepoint )
+--DML and DDL are autocommit statements.
+
+create table stu(
+id int,
+name varchar(30),
+age int
+);
+
+
+
+insert into stu values(100,'alex',30);
+insert into stu values(100,'alex',30);
+insert into stu values(100,'alex',30);
+
+
+commit;
+start transaction;
+
+insert into stu values(102,'sree',29);
+
+savepoint in_done;
+
+MariaDB [mydb]> select * from stu;
++------+------+------+
+| id   | name | age  |
++------+------+------+
+|  100 | alex |   30 |
+|  100 | alex |   30 |
+|  100 | alex |   30 |
+|  102 | sree |   29 |
++------+------+------+
+
+delete from stu where id=102;
+
+savepoint del_done;
+
+MariaDB [mydb]> select * from stu;
++------+------+------+
+| id   | name | age  |
++------+------+------+
+|  100 | alex |   30 |
+|  100 | alex |   30 |
+|  100 | alex |   30 |
++------+------+------+
+
+rollback to savepoint in_done;
+
+MariaDB [mydb]> select * from stu;
++------+------+------+
+| id   | name | age  |
++------+------+------+
+|  100 | alex |   30 |
+|  100 | alex |   30 |
+|  100 | alex |   30 |
++------+------+------+
+
+// in a session we can have multiple transactions.
+
+
+
+
